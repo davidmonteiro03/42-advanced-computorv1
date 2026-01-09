@@ -6,11 +6,29 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/09 16:32:23 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/09 18:05:37 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
+
+static double ft_sqrt(double x)
+{
+	if (x < 0.0)
+		return -std::numeric_limits<double>::quiet_NaN();
+	if (x == 0.0 || x == 1.0)
+		return x;
+	double approx = x;
+	double next;
+	do
+	{
+		next = 0.5 * (approx + x / approx);
+		if (next == approx)
+			break;
+		approx = next;
+	} while (true);
+	return approx;
+}
 
 Computor::Computor(void) {}
 
@@ -145,6 +163,18 @@ std::map<double, double> Computor::__reduce(const std::vector<Token> &tokens)
 	return vars;
 }
 
+std::pair<double, double> Computor::__getHighestDegreeTerm(const std::map<double, double> &vars)
+{
+	std::pair<double, double> highestDegreeTerm;
+	if (vars.size() < 1)
+		return highestDegreeTerm;
+	highestDegreeTerm = *vars.begin();
+	for (std::map<double, double>::const_iterator v = vars.begin(); v != vars.end(); v++)
+		if (v->first > highestDegreeTerm.first)
+			highestDegreeTerm = *v;
+	return highestDegreeTerm;
+}
+
 void Computor::__showReducedForm(const std::map<double, double> &vars)
 {
 	std::cout << "Reduced form: ";
@@ -153,7 +183,7 @@ void Computor::__showReducedForm(const std::map<double, double> &vars)
 		if (v == vars.begin())
 		{
 			std::cout << v->second << " * X^" << v->first;
-			continue ;
+			continue;
 		}
 		std::cout << (v->second >= 0 ? " + " : " - ");
 		std::cout << (v->second >= 0 ? v->second : -v->second);
@@ -187,5 +217,47 @@ void Computor::solve(const std::string &expr)
 		throw std::invalid_argument("empty expression");
 
 	std::map<double, double> vars = Computor::__reduce(tokens);
+
 	Computor::__showReducedForm(vars);
+
+	std::pair<double, double> highestDegreeTerm = Computor::__getHighestDegreeTerm(vars);
+	if (highestDegreeTerm.first == 0)
+	{
+		std::cout << (highestDegreeTerm.second == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+		return;
+	}
+	std::cout << "Polynomial degree: " << highestDegreeTerm.first << std::endl;
+	if (highestDegreeTerm.first > 2)
+	{
+		std::cout << "The polynomial degree is strictly greater than 2, I can't solve." << std::endl;
+		return;
+	}
+	if (highestDegreeTerm.first == 1)
+	{
+		double solution = -vars[0] / vars[1];
+		std::cout << "The solution is:" << std::endl;
+		std::cout << solution << std::endl;
+	}
+	else if (highestDegreeTerm.first == 2)
+	{
+		double a = vars[2], b = vars[1], c = vars[0];
+		double discriminant = b * b - 4 * a * c;
+		if (discriminant > 0)
+		{
+			double solution1 = (-b + ft_sqrt(discriminant)) / (2 * a);
+			double solution2 = (-b - ft_sqrt(discriminant)) / (2 * a);
+			std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
+			std::cout << std::max(solution1, solution2) << std::endl;
+			std::cout << std::min(solution1, solution2) << std::endl;
+		}
+		else if (discriminant == 0) // 2 * X^2 + 4 * X^1 + 2 * X^0 = 0
+		{
+			std::cout << "The solution is:" << std::endl;
+			std::cout << -b / (2 * a) << std::endl;
+		}
+		else if (discriminant < 0)
+		{
+			std::cout << "Complex numbers 💀" << std::endl;
+		}
+	}
 }
