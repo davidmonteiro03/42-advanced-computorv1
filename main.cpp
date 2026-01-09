@@ -1,0 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 13:30:31 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/01/09 16:26:50 by dcaetano         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mandatory/includes/ft_computor.hpp"
+
+int main(int argc, char **argv)
+{
+	if (argc > 2)
+		return 0;
+	std::string expr = "";
+	if (argc == 1)
+		std::getline(std::cin, expr);
+	else
+		expr = argv[1];
+	try
+	{
+		Computor::check(expr);
+		Computor::solve(expr);
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
+		return 1;
+	}
+	return 0;
+}
