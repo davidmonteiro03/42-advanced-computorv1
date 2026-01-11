@@ -32,7 +32,7 @@ OBJ_EXT      = .o
 
 # === FILES ================================================================== #
 
-CLSS         = Computor Token Term
+CLSS         = Computor
 CPPS         = $(CLSS)
 HDRS         = $(CLSS) ft_$(NAME)
 

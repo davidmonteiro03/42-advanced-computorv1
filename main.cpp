@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:30:31 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/09 16:26:50 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/11 21:23:34 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int main(int argc, char **argv)
 		expr = argv[1];
 	try
 	{
-		Computor::check(expr);
 		Computor::solve(expr);
 	}
 	catch (const std::exception &e)
