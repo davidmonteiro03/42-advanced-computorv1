@@ -6,7 +6,7 @@
 #    By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/09 13:31:50 by dcaetano          #+#    #+#              #
-#    Updated: 2026/01/09 15:04:37 by dcaetano         ###   ########.fr        #
+#    Updated: 2026/01/12 11:40:53 by dcaetano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ INCS_D       = includes
 SRCS_D       = srcs
 OBJS_D       = objs
 MAND_D       = mandatory
+BNUS_D       = bonus
 
 # === EXTENSIONS ============================================================= #
 
@@ -35,6 +36,9 @@ OBJ_EXT      = .o
 CLSS         = Computor
 CPPS         = $(CLSS)
 HDRS         = $(CLSS) ft_$(NAME)
+CLSS_B       = Computor
+CPPS_B       = $(CLSS_B)
+HDRS_B       = $(CLSS_B) ft_$(NAME)
 
 ifeq ($(MAKECMDGOALS),bonus)
     INCS     = $(addprefix $(BNUS_D)/$(INCS_D)/, \
@@ -42,7 +46,7 @@ ifeq ($(MAKECMDGOALS),bonus)
                                        $(HDRS_B)))
     SRCS     = $(addprefix $(BNUS_D)/$(SRCS_D)/, \
                            $(addsuffix $(CPP_EXT), \
-                                       $(CPPS)))
+                                       $(CPPS_B)))
     OBJS     = $(patsubst $(BNUS_D)/$(SRCS_D)/%$(CPP_EXT), \
                           $(OBJS_D)/$(BNUS_D)/$(SRCS_D)/%$(OBJ_EXT), \
                           $(SRCS))
@@ -66,7 +70,7 @@ MAIN_OBJ     = $(patsubst %$(CPP_EXT), \
 
 # === FLAGS ================================================================== #
 
-CPP_FLAGS    = -Wall -Wextra -Werror -std=c++2a -pedantic -g
+CPP_FLAGS    = -Wall -Wextra -Werror -std=c++2a -pedantic -g -Ofast
 MK_FLAGS     = -p
 RM_FLAGS     = -rfv
 
@@ -79,7 +83,7 @@ LIB          = $(NAME).a
 
 all: $(NAME)
 
-# bonus: $(NAME)
+bonus: $(NAME)
 
 $(OBJS_D)/%$(OBJ_EXT): %$(CPP_EXT) $(INCS)
 	@$(MK) $(MK_FLAGS) $(dir $@)
@@ -89,9 +93,9 @@ $(OBJS_D)/$(MAND_D)/$(SRCS_D)/%$(OBJ_EXT): $(MAND_D)/$(SRCS_D)/%$(CPP_EXT) $(INC
 	@$(MK) $(MK_FLAGS) $(dir $@)
 	$(CPP) $(CPP_FLAGS) -c $< -o $@
 
-# $(OBJS_D)/$(BNUS_D)/$(SRCS_D)/%$(OBJ_EXT): $(BNUS_D)/$(SRCS_D)/%$(CPP_EXT) $(INCS)
-# 	@$(MK) $(MK_FLAGS) $(dir $@)
-# 	$(CPP) $(CPP_FLAGS) -c $< -o $@
+$(OBJS_D)/$(BNUS_D)/$(SRCS_D)/%$(OBJ_EXT): $(BNUS_D)/$(SRCS_D)/%$(CPP_EXT) $(INCS)
+	@$(MK) $(MK_FLAGS) $(dir $@)
+	$(CPP) $(CPP_FLAGS) -c $< -o $@
 
 $(LIB): $(OBJS)
 	@$(AR_RCS) $(LIB) $(OBJS)
@@ -107,4 +111,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

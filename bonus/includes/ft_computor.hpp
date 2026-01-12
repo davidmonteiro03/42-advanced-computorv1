@@ -1,34 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ft_computor.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:30:31 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/12 07:36:07 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/01/09 13:54:50 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/01/12 17:48:28 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mandatory/includes/ft_computor.hpp"
+#pragma once
 
-int main(int argc, char **argv)
-{
-	if (argc > 2)
-		return 0;
-	std::string expr = "";
-	if (argc == 1)
-		std::getline(std::cin, expr);
-	else
-		expr = argv[1];
-	try
-	{
-		Computor::solve(expr);
-	}
-	catch (const std::exception &e)
-	{
-		std::cout << "Error: " << e.what() << std::endl;
-		return 1;
-	}
-	return 0;
-}
+#include <iostream>
+#include <sstream>
+#include <cstring>
+#include <vector>
+#include <map>
+#include <list>
+#include <limits>
+
+using tokens_t = std::list<std::string>;
+using term_t = std::pair<long long int, double>;
+using terms_t = std::vector<term_t>;
+using equation_t = std::pair<terms_t, terms_t>;
+using reduced_t = std::map<long long int, double>;
+
+#include "Computor.hpp"

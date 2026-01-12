@@ -161,13 +161,15 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 	if (disc < 0)
 		return __solveSecondDegreeEquationNegativeDiscriminant(a, b, disc);
 	std::cout << "The solution is:" << std::endl;
-	std::cout << -b / (2 * a) << std::endl;
+	std::cout << (b == 0 ? 0 : -b / (2 * a)) << std::endl;
 }
 
 void Computor::__solveSecondDegreeEquationPositiveDiscriminant(const double &a,
 															   const double &b,
 															   const double &disc)
 {
+	if (disc <= 0)
+		return ;
 	double x1 = (-b + Computor::__sqrt(disc)) / (2 * a);
 	double x2 = (-b - Computor::__sqrt(disc)) / (2 * a);
 	std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
@@ -179,9 +181,24 @@ void Computor::__solveSecondDegreeEquationNegativeDiscriminant(const double &a,
 															   const double &b,
 															   const double &disc)
 {
+	if (disc >= 0)
+		return ;
 	std::cout << "Discriminant is strictly negative, the two complex solutions are:" << std::endl;
-	std::cout << -b << "/" << 2 * a << " + " << Computor::__sqrt(-disc) << "i/" << 2 * a << std::endl;
-	std::cout << -b << "/" << 2 * a << " - " << Computor::__sqrt(-disc) << "i/" << 2 * a << std::endl;
+	double complexA = -b / (2 * a), complexB = Computor::__sqrt(-disc) / (2 * a);
+	if (complexA == 0)
+	{
+		std::cout << complexB << "i" << std::endl;
+		std::cout << "-" << complexB << "i" << std::endl;
+		return ;
+	}
+	if (complexB == 0)
+	{
+		std::cout << complexA << std::endl;
+		std::cout << complexA << std::endl;
+		return ;
+	}
+	std::cout << complexA << " + " << complexB << "i" << std::endl;
+	std::cout << complexA << " - " << complexB << "i" << std::endl;
 }
 
 void Computor::solve(const std::string &expr)

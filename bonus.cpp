@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   bonus.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:30:31 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/12 07:36:07 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/12 07:38:48 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mandatory/includes/ft_computor.hpp"
+#include "bonus/includes/ft_computor.hpp"
 
 int main(int argc, char **argv)
 {
