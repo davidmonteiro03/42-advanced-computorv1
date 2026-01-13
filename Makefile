@@ -6,7 +6,7 @@
 #    By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/09 13:31:50 by dcaetano          #+#    #+#              #
-#    Updated: 2026/01/12 11:40:53 by dcaetano         ###   ########.fr        #
+#    Updated: 2026/01/13 13:34:24 by dcaetano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,10 +33,10 @@ OBJ_EXT      = .o
 
 # === FILES ================================================================== #
 
-CLSS         = Computor
+CLSS         = Computor Term Equation
 CPPS         = $(CLSS)
 HDRS         = $(CLSS) ft_$(NAME)
-CLSS_B       = Computor
+CLSS_B       = $(CLSS) Parser
 CPPS_B       = $(CLSS_B)
 HDRS_B       = $(CLSS_B) ft_$(NAME)
 
@@ -70,7 +70,7 @@ MAIN_OBJ     = $(patsubst %$(CPP_EXT), \
 
 # === FLAGS ================================================================== #
 
-CPP_FLAGS    = -Wall -Wextra -Werror -std=c++2a -pedantic -g -Ofast
+CPP_FLAGS    = -Wall -Wextra -Werror -std=c++2a -pedantic -g
 MK_FLAGS     = -p
 RM_FLAGS     = -rfv
 

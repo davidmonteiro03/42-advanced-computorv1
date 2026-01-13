@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_computor.hpp                                    :+:      :+:    :+:   */
+/*   Equation.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:54:50 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 11:32:25 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/01/13 10:32:30 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/01/13 10:45:24 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <iostream>
-#include <sstream>
-#include <cstring>
-#include <vector>
-#include <map>
-#include <list>
-#include <limits>
+#include "ft_computor.hpp"
 
-#include "Term.hpp"
+class Equation
+{
+private:
+	terms_t __leftSide, __rightSide;
 
-using tokens_t = std::list<std::string>;
-using terms_t = std::vector<Term>;
-using reduced_t = std::map<long long int, double>;
+public:
+	Equation(void);
+	Equation(const args_t &);
+	Equation(const Equation &);
+	Equation &operator=(const Equation &);
+	~Equation();
 
-#include "Equation.hpp"
-#include "Computor.hpp"
-#include "Parser.hpp"
+	reduced_t reduce(void) const;
+};

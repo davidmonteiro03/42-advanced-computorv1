@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/12 17:54:58 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:30:09 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,34 @@ double Computor::__sqrt(const double &x)
 	return approx;
 }
 
+void Computor::__displayComplex(const double &a,
+								const double &b)
+{
+	if (a == 0 && b == 0)
+	{
+		std::cout << "0" << std::endl;
+		return;
+	}
+	if (a == 0)
+	{
+		if (b == -1)
+			std::cout << "-";
+		else if (b != 1)
+			std::cout << b;
+		std::cout << "i" << std::endl;
+		return;
+	}
+	if (b == 0)
+	{
+		std::cout << a << std::endl;
+		return;
+	}
+	std::cout << a << (b >= 0 ? " + " : " - ");
+	if (b != 1 && b != -1)
+		std::cout << (b >= 0 ? b : -b);
+	std::cout << "i" << std::endl;
+}
+
 bool Computor::__isOperator(const std::string &s)
 {
 	if (s.empty() != false)
@@ -47,319 +75,22 @@ bool Computor::__isOperator(const std::string &s)
 	return std::strchr("+-*=^X", s[0]) != NULL;
 }
 
-void Computor::__checkSyntaxNumbers(const tokens_t::const_iterator &curr,
-									const tokens_t::const_iterator &end)
+Term Computor::__getHighestDegreeTerm(const reduced_t &p)
 {
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev != end && (*prev == "*" || *prev == "X"))
-		throw std::invalid_argument("numbers can't contain '" + *prev + "' before it");
-	if (prev != end && Computor::__isOperator(*prev) == false)
-		throw std::invalid_argument("numbers can't contain other numbers before it");
-	if (next != end && *next == "^")
-		throw std::invalid_argument("numbers can't contain '" + *next + "' after it");
-	if (next != end && Computor::__isOperator(*next) == false)
-		throw std::invalid_argument("numbers can't contain other numbers after it");
-}
-
-void Computor::__checkSyntaxPlusMinus(const tokens_t::const_iterator &curr,
-									  const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && (*prev == "*" || *prev == "^"))
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *prev + "' before it");
-	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *next + "' after it");
-	if (prev != end && next != end && ((*prev == "+" || *prev == "-") && (*next == "+" || *next == "-")))
-		throw std::invalid_argument("expression can't have three '+'/'-' consecutive signs");
-}
-
-void Computor::__checkSyntaxEquals(const tokens_t::const_iterator &curr,
-								   const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something before it");
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && Computor::__isOperator(*prev) != false && *prev != "X")
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *prev + "' before it");
-	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *next + "' after it");
-}
-
-void Computor::__checkSyntaxAsterik(const tokens_t::const_iterator &curr,
-									const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something before it");
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && Computor::__isOperator(*prev) != false)
-		throw std::invalid_argument("'" + *curr + "' sign must contain numbers before it");
-	if (next != end && *next != "X")
-		throw std::invalid_argument("'" + *curr + "' sign must contain an 'X' after it");
-}
-
-void Computor::__checkSyntaxCaret(const tokens_t::const_iterator &curr,
-								  const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something before it");
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && *prev != "X")
-		throw std::invalid_argument("'" + *curr + "' sign must contain an 'X' before it");
-	if (next != end && Computor::__isOperator(*next) != false)
-		throw std::invalid_argument("'" + *curr + "' sign must contain numbers after it");
-}
-
-void Computor::__checkSyntaxVariableX(const tokens_t::const_iterator &curr,
-									  const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev != end && (*prev == "^" || *prev == "X"))
-		throw std::invalid_argument("'" + *curr + "' sign must contain an '" + *prev + "' before it");
-	if (next != end && (*next == "*" || *next == "X"))
-		throw std::invalid_argument("'" + *curr + "' sign must contain an '" + *next + "' after it");
-}
-
-void Computor::__checkSyntax(const tokens_t &tokens)
-{
-	if (tokens.empty() != false)
-		return;
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
-	{
-		if (Computor::__isOperator(*t) == false)
-		{
-			Computor::__checkSyntaxNumbers(t, tokens.end());
-			continue;
-		}
-		if (*t == "+" || *t == "-")
-		{
-			Computor::__checkSyntaxPlusMinus(t, tokens.end());
-			continue;
-		}
-		if (*t == "=")
-		{
-			Computor::__checkSyntaxEquals(t, tokens.end());
-			continue;
-		}
-		if (*t == "*")
-		{
-			Computor::__checkSyntaxAsterik(t, tokens.end());
-			continue;
-		}
-		if (*t == "^")
-		{
-			Computor::__checkSyntaxCaret(t, tokens.end());
-			continue;
-		}
-		if (*t == "X")
-		{
-			Computor::__checkSyntaxVariableX(t, tokens.end());
-			continue;
-		}
-	}
-}
-
-void Computor::__checkVocabularyEquals(const tokens_t &tokens)
-{
-	bool hasEquals = false;
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
-	{
-		if (*t == "=")
-		{
-			if (hasEquals == true)
-				throw std::invalid_argument("expression must have only one '=' sign");
-			hasEquals = true;
-		}
-	}
-	if (hasEquals == false)
-		throw std::invalid_argument("expression must have a '=' sign");
-}
-
-void Computor::__checkVocabularyNumbers(const tokens_t &tokens)
-{
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
-	{
-		if (Computor::__isOperator(*t) == false)
-		{
-			tokens_t::const_iterator prev = std::prev(t);
-			if (prev != tokens.end() && *prev == "^")
-			{
-				double dDouble = 0;
-				long long int dInt = 0;
-				std::stringstream ssDouble(*t), ssInt(*t);
-				ssDouble >> dDouble;
-				ssInt >> dInt;
-				double check = static_cast<double>(dInt);
-				if (dDouble != check)
-					throw std::invalid_argument("'X' exponents must be integer");
-			}
-		}
-	}
-}
-
-void Computor::__checkVocabulary(const tokens_t &tokens)
-{
-	if (tokens.empty() != false)
-		throw std::invalid_argument("expression must not be empty");
-	Computor::__checkVocabularyNumbers(tokens);
-	Computor::__checkVocabularyEquals(tokens);
-}
-
-tokens_t Computor::__tokenization(const std::string &expr)
-{
-	for (std::string::const_iterator c = expr.begin(); c != expr.end(); c++)
-		if (std::strchr("0123456789+-*=.X^", *c) == NULL && std::isspace(*c) == false)
-			throw std::invalid_argument("expression contains invalid characters");
-	tokens_t tokens;
-	for (std::string::const_iterator c = expr.begin(); c != expr.end();)
-	{
-		if (std::isspace(*c) != false)
-		{
-			c++;
-			continue;
-		}
-		if (std::strchr("+-*=^X", *c) != NULL)
-		{
-			tokens.push_back(expr.substr(std::distance(expr.begin(), c++), 1));
-			continue;
-		}
-		std::string::const_iterator start = c;
-		for (; c != expr.end() && std::isspace(*c) == false && std::strchr("+-*=^X", *c) == NULL; c++)
-			;
-		std::string::const_iterator end = c;
-		tokens.push_back(expr.substr(std::distance(expr.begin(), start), std::distance(start, end)));
-	}
-	return tokens;
-}
-
-equation_t Computor::__parse(const tokens_t &tokens)
-{
-	equation_t equation;
-	double sign = 1;
-	bool switchSide = false;
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
-	{
-		terms_t &side = (switchSide == false ? equation.first : equation.second);
-		if (Computor::__isOperator(*t) == false)
-		{
-			tokens_t::const_iterator v = t, next = std::next(t);
-			double value = 0;
-			std::stringstream vSs(*v);
-			vSs >> value;
-			if (next == tokens.end())
-			{
-				if (value != 0)
-					side.push_back(std::make_pair(0, value * sign));
-				sign = 1;
-				break;
-			}
-			if (*next != "*" && *next != "X")
-			{
-				if (value != 0)
-					side.push_back(std::make_pair(0, value * sign));
-				sign = 1;
-				continue;
-			}
-			if (*next == "*")
-				next = std::next(++t);
-			next = std::next(++t);
-			if (next == tokens.end())
-			{
-				if (value != 0)
-					side.push_back(std::make_pair(1, value * sign));
-				sign = 1;
-				break;
-			}
-			if (*next != "^")
-			{
-				if (value != 0)
-					side.push_back(std::make_pair(1, value * sign));
-				sign = 1;
-				continue;
-			}
-			next = std::next(++t);
-			long long int degree = 0;
-			std::stringstream dSs(*next);
-			dSs >> degree;
-			if (value != 0)
-				side.push_back(std::make_pair(degree, value * sign));
-			sign = 1;
-			++t;
-		}
-		else if (*t == "X")
-		{
-			tokens_t::const_iterator next = std::next(t);
-			if (next == tokens.end())
-			{
-				side.push_back(std::make_pair(1, sign));
-				sign = 1;
-				break;
-			}
-			if (*next != "^")
-			{
-				side.push_back(std::make_pair(1, sign));
-				sign = 1;
-				continue;
-			}
-			next = std::next(++t);
-			long long int degree = 0;
-			std::stringstream dSs(*next);
-			dSs >> degree;
-			side.push_back(std::make_pair(degree, sign));
-			sign = 1;
-			++t;
-		}
-		else if (*t == "-")
-			sign = -sign;
-		else if (*t == "=")
-			switchSide = !switchSide;
-	}
-	return equation;
-}
-
-equation_t Computor::__moveAllToOneSide(const equation_t &equation)
-{
-	equation_t allInOneSide(equation);
-	while (allInOneSide.second.empty() == false)
-	{
-		term_t elementToMove = allInOneSide.second.front();
-		allInOneSide.first.push_back(std::make_pair(elementToMove.first, -elementToMove.second));
-		allInOneSide.second.erase(allInOneSide.second.begin());
-	}
-	return allInOneSide;
-}
-
-reduced_t Computor::__reduce(const equation_t &allInOneSide)
-{
-	reduced_t reducedForm;
-	for (terms_t::const_iterator t = allInOneSide.first.begin(); t != allInOneSide.first.end(); t++)
-		reducedForm[t->first] += t->second;
-	for (reduced_t::iterator t = reducedForm.begin(); t != reducedForm.end();)
-	{
-		if (t->second == 0)
-			t = reducedForm.erase(t);
-		else
-			++t;
-	}
-	return reducedForm;
-}
-
-term_t Computor::__getHighestDegreeTerm(const reduced_t &p)
-{
-	term_t highestDegreeTerm;
-	if (p.size() < 1)
+	Term highestDegreeTerm;
+	if (p.empty() != false)
 		return highestDegreeTerm;
-	highestDegreeTerm = *p.begin();
-	for (reduced_t::const_iterator t = p.begin(); t != p.end(); t++)
-		if (t->first > highestDegreeTerm.first)
-			highestDegreeTerm = *t;
+	reduced_t::const_iterator r = p.begin();
+	highestDegreeTerm.setDegree(r->first);
+	highestDegreeTerm.setValue(r->second);
+	for (reduced_t::const_iterator r = p.begin(); r != p.end(); r++)
+	{
+		if (r->first > highestDegreeTerm.getDegree())
+		{
+			highestDegreeTerm.setDegree(r->first);
+			highestDegreeTerm.setValue(r->second);
+		}
+	}
 	return highestDegreeTerm;
 }
 
@@ -398,6 +129,14 @@ void Computor::__displayTerm(const long long int &degree,
 	}
 }
 
+void Computor::__displayValue(const double &v)
+{
+	if (v >= 0)
+		std::cout << v;
+	else
+		std::cout << "(" << v << ")";
+}
+
 void Computor::__displayTerms(const terms_t &terms)
 {
 	if (terms.empty() != false)
@@ -408,9 +147,9 @@ void Computor::__displayTerms(const terms_t &terms)
 	for (terms_t::const_iterator t = terms.begin(); t != terms.end(); t++)
 	{
 		if (t == terms.begin())
-			Computor::__displayTerm(t->first, t->second, true);
+			Computor::__displayTerm(t->getDegree(), t->getValue(), true);
 		else
-			Computor::__displayTerm(t->first, t->second, false);
+			Computor::__displayTerm(t->getDegree(), t->getValue(), false);
 	}
 }
 
@@ -430,64 +169,29 @@ void Computor::__displayReducedForm(const reduced_t &reduced)
 	}
 }
 
-equation_t Computor::__solveStep1(const tokens_t &tokens)
+void Computor::__actualSolve(const reduced_t &reducedForm)
 {
-	equation_t understandable = Computor::__parse(tokens);
-	std::cout << "STEP 1" << std::endl;
-	std::cout << "Understandable form: ";
-	__displayTerms(understandable.first);
-	std::cout << " = ";
-	__displayTerms(understandable.second);
-	std::cout << std::endl
-			  << std::endl;
-	return understandable;
-}
-
-equation_t Computor::__solveStep2(const equation_t &understandable)
-{
-	equation_t allInOneSide = Computor::__moveAllToOneSide(understandable);
-	std::cout << "STEP 2" << std::endl;
-	std::cout << "One-side polynomial equation: ";
-	__displayTerms(allInOneSide.first);
-	std::cout << " = ";
-	__displayTerms(allInOneSide.second);
-	std::cout << std::endl
-			  << std::endl;
-	return allInOneSide;
-}
-
-reduced_t Computor::__solveStep3(const equation_t &allInOneSide)
-{
-	reduced_t reducedForm = Computor::__reduce(allInOneSide);
-	std::cout << "STEP 3" << std::endl;
 	std::cout << "Reduced form: ";
 	Computor::__displayReducedForm(reducedForm);
-	std::cout << " = 0" << std::endl
-			  << std::endl;
-	return reducedForm;
-}
-
-void Computor::__solveStep4(const reduced_t &reducedForm)
-{
-	std::cout << "STEP 4" << std::endl;
+	std::cout << " = 0" << std::endl;
 	if (reducedForm.empty())
 	{
 		std::cout << "Any real number is a solution." << std::endl;
 		return;
 	}
-	term_t highestDegreeTerm = Computor::__getHighestDegreeTerm(reducedForm);
-	if (highestDegreeTerm.first == 0)
+	Term highestDegreeTerm = Computor::__getHighestDegreeTerm(reducedForm);
+	if (highestDegreeTerm.getDegree() == 0)
 	{
-		std::cout << (highestDegreeTerm.second == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+		std::cout << (highestDegreeTerm.getValue() == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
 		return;
 	}
-	std::cout << "Polynomial degree: " << highestDegreeTerm.first << std::endl;
-	if (highestDegreeTerm.first == 1)
+	std::cout << "Polynomial degree: " << highestDegreeTerm.getDegree() << std::endl;
+	if (highestDegreeTerm.getDegree() == 1)
 	{
 		Computor::__solveFirstDegreeEquation(reducedForm);
 		return;
 	}
-	if (highestDegreeTerm.first == 2)
+	if (highestDegreeTerm.getDegree() == 2)
 	{
 		Computor::__solveSecondDegreeEquation(reducedForm);
 		return;
@@ -504,32 +208,61 @@ void Computor::__solveFirstDegreeEquation(const reduced_t &eq)
 	std::cout << x << std::endl;
 }
 
-void Computor::__solveSecondDegreeEquation(const reduced_t &eq)
+void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 {
-	reduced_t tmp(eq);
+	reduced_t tmp(reduced);
 	double a = tmp[2], b = tmp[1], c = tmp[0];
+	if (a == 0)
+	{
+		std::cout << "The solution is:" << std::endl;
+		std::cout << -c / b << std::endl;
+		return;
+	}
 	double disc = b * b - 4 * a * c;
 	if (disc > 0)
-		return Computor::__solveSecondDegreeEquationPositiveDiscriminant(a, b, disc);
+		return __solveSecondDegreeEquationPositiveDiscriminant(a, b, disc);
+	if (disc < 0)
+		return __solveSecondDegreeEquationNegativeDiscriminant(a, b, disc);
+	std::cout << "The solution is:" << std::endl;
+	std::cout << (b == 0 ? 0 : -b / (2 * a)) << std::endl;
 }
 
-void Computor::__solveSecondDegreeEquationPositiveDiscriminant(const double &,
-															   const double &,
-															   const double &)
+void Computor::__solveSecondDegreeEquationPositiveDiscriminant(const double &a,
+															   const double &b,
+															   const double &disc)
 {
+	if (disc <= 0)
+		return;
+	double x1 = (-b + Computor::__sqrt(disc)) / (2 * a);
+	double x2 = (-b - Computor::__sqrt(disc)) / (2 * a);
+	std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
+	std::cout << std::max(x1, x2) << std::endl;
+	std::cout << std::min(x1, x2) << std::endl;
+}
+
+void Computor::__solveSecondDegreeEquationNegativeDiscriminant(const double &a,
+															   const double &b,
+															   const double &disc)
+{
+	if (disc >= 0)
+		return;
+	std::cout << "Discriminant is strictly negative, the two complex solutions are:" << std::endl;
+	double complexA = -b / (2 * a), complexB = Computor::__sqrt(-disc) / (2 * a);
+	Computor::__displayComplex(complexA, complexB);
+	Computor::__displayComplex(complexA, -complexB);
 }
 
 void Computor::solve(const std::string &expr)
 {
 	try
 	{
-		tokens_t tokens = Computor::__tokenization(expr);
-		Computor::__checkSyntax(tokens);
-		Computor::__checkVocabulary(tokens);
-		equation_t understandable = Computor::__solveStep1(tokens);
-		equation_t allInOneSide = Computor::__solveStep2(understandable);
-		reduced_t reducedForm = Computor::__solveStep3(allInOneSide);
-		Computor::__solveStep4(reducedForm);
+		tokens_t tokens = Parser::tokenization(expr);
+		Parser::checkSyntax(tokens);
+		Parser::checkVocabulary(tokens);
+		Equation equation(tokens);
+		Equation allInOneSide = equation.moveAllToOneSide();
+		reduced_t reducedForm = allInOneSide.reduce();
+		Computor::__actualSolve(reducedForm);
 	}
 	catch (const std::exception &e)
 	{

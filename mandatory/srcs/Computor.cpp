@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/11 21:44:35 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/13 12:26:59 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,34 @@ double Computor::__sqrt(const double &x)
 	return approx;
 }
 
+void Computor::__displayComplex(const double &a,
+								const double &b)
+{
+	if (a == 0 && b == 0)
+	{
+		std::cout << "0" << std::endl;
+		return ;
+	}
+	if (a == 0)
+	{
+		if (b == -1)
+			std::cout << "-";
+		else if (b != 1)
+			std::cout << b;
+		std::cout << "i" << std::endl;
+		return ;
+	}
+	if (b == 0)
+	{
+		std::cout << a << std::endl;
+		return ;
+	}
+	std::cout << a << (b >= 0 ? " + " : " - ");
+	if (b != 1 && b != -1)
+		std::cout << (b >= 0 ? b : -b);
+	std::cout << "i" << std::endl;
+}
+
 void Computor::__showReducedForm(const reduced_t &reduced)
 {
 	std::cout << "Reduced form: ";
@@ -55,15 +83,22 @@ void Computor::__showReducedForm(const reduced_t &reduced)
 	std::cout << " = 0" << std::endl;
 }
 
-term_t Computor::__getHighestDegreeTerm(const reduced_t &reduced)
+Term Computor::__getHighestDegreeTerm(const reduced_t &reduced)
 {
-	term_t highestDegreeTerm;
+	Term highestDegreeTerm;
 	if (reduced.empty() != false)
 		return highestDegreeTerm;
-	highestDegreeTerm = *reduced.begin();
+	reduced_t::const_iterator r = reduced.begin();
+	highestDegreeTerm.setDegree(r->first);
+	highestDegreeTerm.setValue(r->second);
 	for (reduced_t::const_iterator r = reduced.begin(); r != reduced.end(); r++)
-		if (r->first > highestDegreeTerm.first)
-			highestDegreeTerm = *r;
+	{
+		if (r->first > highestDegreeTerm.getDegree())
+		{
+			highestDegreeTerm.setDegree(r->first);
+			highestDegreeTerm.setValue(r->second);
+		}
+	}
 	return highestDegreeTerm;
 }
 
@@ -79,61 +114,6 @@ args_t Computor::__split(const std::string &s)
 			words.push_back(word);
 	}
 	return words;
-}
-
-equation_t Computor::__equation(const args_t &args)
-{
-	equation_t eq;
-	bool sideOfEquation = false;
-	double signal = 1;
-	for (args_t::const_iterator a = args.begin(); a != args.end();)
-	{
-		std::stringstream ssValue(*a);
-		double value = 0;
-		ssValue >> value;
-		if (++a == args.end())
-			break;
-		if (++a == args.end())
-			break;
-		if (a->size() >= 3)
-		{
-			std::stringstream ssDegree(a->substr(2, a->size() - 2));
-			double degree = 0;
-			ssDegree >> degree;
-			terms_t &side = (sideOfEquation == false ? eq.first : eq.second);
-			side.push_back(std::make_pair(degree, value * signal));
-		}
-		if (++a == args.end())
-			break;
-		std::string op(*a);
-		if (op == "+")
-			signal = 1;
-		else if (op == "-")
-			signal = -1;
-		else if (op == "=")
-		{
-			sideOfEquation = !sideOfEquation;
-			signal = 1;
-		}
-		if (++a == args.end())
-			break;
-	}
-	return eq;
-}
-
-reduced_t Computor::__reduce(const equation_t &eq)
-{
-	equation_t tmp(eq);
-	while (tmp.second.empty() == false)
-	{
-		term_t term = tmp.second.front();
-		tmp.first.push_back(std::make_pair(term.first, -term.second));
-		tmp.second.erase(tmp.second.begin());
-	}
-	reduced_t reduced;
-	for (terms_t::iterator t = tmp.first.begin(); t != tmp.first.end(); t++)
-		reduced[t->first] += t->second;
-	return reduced;
 }
 
 void Computor::__solveFirstDegreeEquation(const reduced_t &reduced)
@@ -169,7 +149,7 @@ void Computor::__solveSecondDegreeEquationPositiveDiscriminant(const double &a,
 															   const double &disc)
 {
 	if (disc <= 0)
-		return ;
+		return;
 	double x1 = (-b + Computor::__sqrt(disc)) / (2 * a);
 	double x2 = (-b - Computor::__sqrt(disc)) / (2 * a);
 	std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
@@ -182,41 +162,29 @@ void Computor::__solveSecondDegreeEquationNegativeDiscriminant(const double &a,
 															   const double &disc)
 {
 	if (disc >= 0)
-		return ;
+		return;
 	std::cout << "Discriminant is strictly negative, the two complex solutions are:" << std::endl;
 	double complexA = -b / (2 * a), complexB = Computor::__sqrt(-disc) / (2 * a);
-	if (complexA == 0)
-	{
-		std::cout << complexB << "i" << std::endl;
-		std::cout << "-" << complexB << "i" << std::endl;
-		return ;
-	}
-	if (complexB == 0)
-	{
-		std::cout << complexA << std::endl;
-		std::cout << complexA << std::endl;
-		return ;
-	}
-	std::cout << complexA << " + " << complexB << "i" << std::endl;
-	std::cout << complexA << " - " << complexB << "i" << std::endl;
+	Computor::__displayComplex(complexA, complexB);
+	Computor::__displayComplex(complexA, -complexB);
 }
 
 void Computor::solve(const std::string &expr)
 {
 	args_t args = Computor::__split(expr);
-	equation_t eq = Computor::__equation(args);
-	reduced_t reduced = Computor::__reduce(eq);
+	Equation eq(args);
+	reduced_t reduced = eq.reduce();
 	Computor::__showReducedForm(reduced);
-	term_t highestDegreeTerm = Computor::__getHighestDegreeTerm(reduced);
-	if (highestDegreeTerm.first < 1)
+	Term highestDegreeTerm = Computor::__getHighestDegreeTerm(reduced);
+	if (highestDegreeTerm.getDegree() < 1)
 	{
-		std::cout << (highestDegreeTerm.second == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+		std::cout << (highestDegreeTerm.getValue() == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
 		return;
 	}
-	std::cout << "Polynomial degree: " << highestDegreeTerm.first << std::endl;
-	if (highestDegreeTerm.first == 1)
+	std::cout << "Polynomial degree: " << highestDegreeTerm.getDegree() << std::endl;
+	if (highestDegreeTerm.getDegree() == 1)
 		return Computor::__solveFirstDegreeEquation(reduced);
-	if (highestDegreeTerm.first == 2)
+	if (highestDegreeTerm.getDegree() == 2)
 		return Computor::__solveSecondDegreeEquation(reduced);
 	std::cout << "The polynomial degree is strictly greater than 2, I can't solve." << std::endl;
 }

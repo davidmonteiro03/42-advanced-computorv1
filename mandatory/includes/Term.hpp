@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_computor.hpp                                    :+:      :+:    :+:   */
+/*   Term.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:54:50 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 11:32:25 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/01/13 10:16:25 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/01/13 10:19:46 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <iostream>
-#include <sstream>
-#include <cstring>
-#include <vector>
-#include <map>
-#include <list>
-#include <limits>
+#include "ft_computor.hpp"
 
-#include "Term.hpp"
+class Term
+{
+private:
+	long long int __degree;
+	double __value;
 
-using tokens_t = std::list<std::string>;
-using terms_t = std::vector<Term>;
-using reduced_t = std::map<long long int, double>;
+public:
+	Term(void);
+	Term(const long long int &,
+		 const double &);
+	Term(const Term &);
+	Term &operator=(const Term &);
+	~Term();
 
-#include "Equation.hpp"
-#include "Computor.hpp"
-#include "Parser.hpp"
+	const long long int &getDegree(void) const;
+	const double &getValue(void) const;
+
+	void setDegree(const long long int &);
+	void setValue(const double &);
+};
