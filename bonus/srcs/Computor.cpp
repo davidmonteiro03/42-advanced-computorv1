@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/15 14:52:31 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/15 15:23:59 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,8 +224,8 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 			std::cout << (c == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
 			return;
 		}
-		std::cout << "The solution is:" << std::endl;
-		std::cout << -c / b << std::endl;
+		std::cout << "Discriminant is zero, the solution is:" << std::endl;
+		std::cout << (c != 0 ? -c / b : 0) << std::endl;
 		return;
 	}
 	double disc = b * b - 4 * a * c;
@@ -233,7 +233,7 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 		return __solveSecondDegreeEquationPositiveDiscriminant(a, b, disc);
 	if (disc < 0)
 		return __solveSecondDegreeEquationNegativeDiscriminant(a, b, disc);
-	std::cout << "Discriminant is strictly zero, the solution is:" << std::endl;
+	std::cout << "Discriminant is zero, the solution is:" << std::endl;
 	std::cout << (b == 0 ? 0 : -b / (2 * a)) << std::endl;
 }
 
@@ -246,8 +246,8 @@ void Computor::__solveSecondDegreeEquationPositiveDiscriminant(const double &a,
 	double x1 = (-b + Computor::__sqrt(disc)) / (2 * a);
 	double x2 = (-b - Computor::__sqrt(disc)) / (2 * a);
 	std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
-	std::cout << std::max(x1, x2) << std::endl;
-	std::cout << std::min(x1, x2) << std::endl;
+	std::cout << (std::max(x1, x2) != 0 ? std::max(x1, x2) : 0) << std::endl;
+	std::cout << (std::min(x1, x2) != 0 ? std::min(x1, x2) : 0) << std::endl;
 }
 
 void Computor::__solveSecondDegreeEquationNegativeDiscriminant(const double &a,
