@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 13:30:09 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/15 14:52:31 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,11 @@ void Computor::__solveFirstDegreeEquation(const reduced_t &eq)
 {
 	reduced_t tmp(eq);
 	double a = tmp[1], b = tmp[0];
+	if (a == 0)
+	{
+		std::cout << (b == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+		return;
+	}
 	double x = -b / a;
 	std::cout << "The solution is:" << std::endl;
 	std::cout << x << std::endl;
@@ -214,6 +219,11 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 	double a = tmp[2], b = tmp[1], c = tmp[0];
 	if (a == 0)
 	{
+		if (b == 0)
+		{
+			std::cout << (c == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+			return;
+		}
 		std::cout << "The solution is:" << std::endl;
 		std::cout << -c / b << std::endl;
 		return;
@@ -223,7 +233,7 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 		return __solveSecondDegreeEquationPositiveDiscriminant(a, b, disc);
 	if (disc < 0)
 		return __solveSecondDegreeEquationNegativeDiscriminant(a, b, disc);
-	std::cout << "The solution is:" << std::endl;
+	std::cout << "Discriminant is strictly zero, the solution is:" << std::endl;
 	std::cout << (b == 0 ? 0 : -b / (2 * a)) << std::endl;
 }
 
@@ -254,18 +264,11 @@ void Computor::__solveSecondDegreeEquationNegativeDiscriminant(const double &a,
 
 void Computor::solve(const std::string &expr)
 {
-	try
-	{
-		tokens_t tokens = Parser::tokenization(expr);
-		Parser::checkSyntax(tokens);
-		Parser::checkVocabulary(tokens);
-		Equation equation(tokens);
-		Equation allInOneSide = equation.moveAllToOneSide();
-		reduced_t reducedForm = allInOneSide.reduce();
-		Computor::__actualSolve(reducedForm);
-	}
-	catch (const std::exception &e)
-	{
-		throw;
-	}
+	tokens_t tokens = Parser::tokenization(expr);
+	Parser::checkSyntax(tokens);
+	Parser::checkVocabulary(tokens);
+	Equation equation(tokens);
+	Equation allInOneSide = equation.moveAllToOneSide();
+	reduced_t reducedForm = allInOneSide.reduce();
+	Computor::__actualSolve(reducedForm);
 }

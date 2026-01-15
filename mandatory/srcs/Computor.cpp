@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 12:26:59 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/15 14:47:06 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void Computor::__displayComplex(const double &a,
 	if (a == 0 && b == 0)
 	{
 		std::cout << "0" << std::endl;
-		return ;
+		return;
 	}
 	if (a == 0)
 	{
@@ -53,12 +53,12 @@ void Computor::__displayComplex(const double &a,
 		else if (b != 1)
 			std::cout << b;
 		std::cout << "i" << std::endl;
-		return ;
+		return;
 	}
 	if (b == 0)
 	{
 		std::cout << a << std::endl;
-		return ;
+		return;
 	}
 	std::cout << a << (b >= 0 ? " + " : " - ");
 	if (b != 1 && b != -1)
@@ -120,6 +120,11 @@ void Computor::__solveFirstDegreeEquation(const reduced_t &reduced)
 {
 	reduced_t tmp(reduced);
 	double a = tmp[1], b = tmp[0];
+	if (a == 0)
+	{
+		std::cout << (b == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+		return;
+	}
 	double x = -b / a;
 	std::cout << "The solution is:" << std::endl;
 	std::cout << x << std::endl;
@@ -131,6 +136,11 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 	double a = tmp[2], b = tmp[1], c = tmp[0];
 	if (a == 0)
 	{
+		if (b == 0)
+		{
+			std::cout << (c == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
+			return;
+		}
 		std::cout << "The solution is:" << std::endl;
 		std::cout << -c / b << std::endl;
 		return;
@@ -140,7 +150,7 @@ void Computor::__solveSecondDegreeEquation(const reduced_t &reduced)
 		return __solveSecondDegreeEquationPositiveDiscriminant(a, b, disc);
 	if (disc < 0)
 		return __solveSecondDegreeEquationNegativeDiscriminant(a, b, disc);
-	std::cout << "The solution is:" << std::endl;
+	std::cout << "Discriminant is strictly zero, the solution is:" << std::endl;
 	std::cout << (b == 0 ? 0 : -b / (2 * a)) << std::endl;
 }
 
@@ -150,9 +160,9 @@ void Computor::__solveSecondDegreeEquationPositiveDiscriminant(const double &a,
 {
 	if (disc <= 0)
 		return;
+	std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
 	double x1 = (-b + Computor::__sqrt(disc)) / (2 * a);
 	double x2 = (-b - Computor::__sqrt(disc)) / (2 * a);
-	std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
 	std::cout << std::max(x1, x2) << std::endl;
 	std::cout << std::min(x1, x2) << std::endl;
 }
