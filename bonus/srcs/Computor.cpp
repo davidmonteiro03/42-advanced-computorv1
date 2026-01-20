@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 13:54:03 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/15 15:23:59 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/01/20 20:09:11 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ void Computor::__solveFirstDegreeEquation(const reduced_t &eq)
 		std::cout << (b == 0 ? "Any real number is a solution." : "No solution.") << std::endl;
 		return;
 	}
-	double x = -b / a;
+	double x = (b == 0 ? 0 : -b / a);
 	std::cout << "The solution is:" << std::endl;
 	std::cout << x << std::endl;
 }
