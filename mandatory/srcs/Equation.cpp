@@ -5,51 +5,46 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 10:39:33 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/15 16:23:31 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 08:12:16 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/24 11:24:12 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-Equation::Equation(void) : __leftSide(terms_t()),
-						   __rightSide(terms_t()) {}
+Equation::Equation(void) : __leftSide(),
+						   __rightSide() {}
 
-Equation::Equation(const args_t &args)
+Equation::Equation(const std::string &expr)
 {
-	bool sideOfEquation = false;
-	double signal = 1;
-	for (args_t::const_iterator a = args.begin(); a != args.end();)
+	std::vector<std::string> args = Parser::split(expr);
+	double sign = 1.0;
+	bool sideFlag = false;
+	for (std::vector<std::string>::iterator a = args.begin(); a != args.end(); a++)
 	{
-		std::stringstream ssValue(*a);
-		double value = 0;
-		ssValue >> value;
+		std::string valueStr = *a;
 		if (++a == args.end())
 			break;
+		if (Parser::checkAsterisk(*a) == false || ++a == args.end())
+			break;
+		std::string variableXStr = *a;
+		if (Parser::checkVariableX(*a) == false)
+			break;
+		std::vector<Term> &side = sideFlag == false ? this->__leftSide : this->__rightSide;
+		double value = Parser::getValue(valueStr) * sign;
+		long long int degree = Parser::getDegree(variableXStr);
+		side.push_back(Term(value, degree));
 		if (++a == args.end())
 			break;
-		if (a->size() >= 3)
+		if (Parser::checkOperator(*a) == false)
+			break;
+		if (*a == "-")
+			sign = -1.0;
+		else if (*a == "=")
 		{
-			std::stringstream ssDegree(a->substr(2, a->size() - 2));
-			long long int degree = 0;
-			ssDegree >> degree;
-			terms_t &side = (sideOfEquation == false ? this->__leftSide : this->__rightSide);
-			side.push_back(Term(degree, value * signal));
+			sign = 1.0;
+			sideFlag = !sideFlag;
 		}
-		if (++a == args.end())
-			break;
-		std::string op(*a);
-		if (op == "+")
-			signal = 1;
-		else if (op == "-")
-			signal = -1;
-		else if (op == "=")
-		{
-			sideOfEquation = !sideOfEquation;
-			signal = 1;
-		}
-		if (++a == args.end())
-			break;
 	}
 }
 
@@ -67,18 +62,3 @@ Equation &Equation::operator=(const Equation &other)
 }
 
 Equation::~Equation() {}
-
-reduced_t Equation::reduce(void) const
-{
-	terms_t l(this->__leftSide), r(this->__rightSide);
-	while (r.empty() == false)
-	{
-		Term term = r.front();
-		l.push_back(Term(term.getDegree(), -term.getValue()));
-		r.erase(r.begin());
-	}
-	reduced_t reduced;
-	for (terms_t::iterator t = l.begin(); t != l.end(); t++)
-		reduced[t->getDegree()] += t->getValue();
-	return reduced;
-}

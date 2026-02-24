@@ -5,96 +5,59 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 11:22:47 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 11:31:27 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/24 10:50:59 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/24 11:23:59 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-Equation::Equation(void) : __leftSide(terms_t()),
-						   __rightSide(terms_t()) {}
+Equation::Equation(void) : __leftSide(),
+						   __rightSide() {}
 
-Equation::Equation(const tokens_t &tokens)
+Equation::Equation(const std::list<std::string> &tokens) : __leftSide(),
+														   __rightSide()
 {
-	double sign = 1;
-	bool switchSide = false;
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
+	if (tokens.empty())
+		return;
+	bool sideFlag = false;
+	for (std::list<std::string>::const_iterator t = tokens.begin(); t != tokens.end();)
 	{
-		terms_t &side = (switchSide == false ? this->__leftSide : this->__rightSide);
-		if (Equation::__isOperator(*t) == false)
+		if (*t == "=")
 		{
-			tokens_t::const_iterator v = t, next = std::next(t);
-			double value = 0;
-			std::stringstream vSs(*v);
-			vSs >> value;
-			if (next == tokens.end())
-			{
-				if (value != 0)
-					side.push_back(Term(0, value * sign));
-				sign = 1;
-				break;
-			}
-			if (*next != "*" && *next != "X")
-			{
-				if (value != 0)
-					side.push_back(Term(0, value * sign));
-				sign = 1;
-				continue;
-			}
-			if (*next == "*")
-				next = std::next(++t);
-			next = std::next(++t);
-			if (next == tokens.end())
-			{
-				if (value != 0)
-					side.push_back(Term(1, value * sign));
-				sign = 1;
-				break;
-			}
-			if (*next != "^")
-			{
-				if (value != 0)
-					side.push_back(Term(1, value * sign));
-				sign = 1;
-				continue;
-			}
-			next = std::next(++t);
-			long long int degree = 0;
-			std::stringstream dSs(*next);
-			dSs >> degree;
-			if (value != 0)
-				side.push_back(Term(degree, value * sign));
-			sign = 1;
-			++t;
+			sideFlag = !sideFlag;
+			t++;
+			continue;
 		}
-		else if (*t == "X")
+		std::string valueStr = "1", degreeStr = "0";
+		bool isValueNegative = false, isDegreeNegative = false;
+		while (t != tokens.end() && (*t == "+" || *t == "-"))
+			if (*t++ == "-")
+				isValueNegative = !isValueNegative;
+		if (t != tokens.end() && Equation::__isOperator(*t) == false)
+			valueStr = *t++;
+		if (t != tokens.end() && *t == "*")
+			t++;
+		if (t != tokens.end() && *t == "X")
 		{
-			tokens_t::const_iterator next = std::next(t);
-			if (next == tokens.end())
+			degreeStr = "1";
+			if (++t != tokens.end() && *t == "^")
 			{
-				side.push_back(Term(1, sign));
-				sign = 1;
-				break;
+				while (++t != tokens.end() && (*t == "+" || *t == "-"))
+					if (*t == "-")
+						isDegreeNegative = !isDegreeNegative;
+				if (t != tokens.end() && Equation::__isOperator(*t) == false)
+					degreeStr = *t++;
 			}
-			if (*next != "^")
-			{
-				side.push_back(Term(1, sign));
-				sign = 1;
-				continue;
-			}
-			next = std::next(++t);
-			long long int degree = 0;
-			std::stringstream dSs(*next);
-			dSs >> degree;
-			side.push_back(Term(degree, sign));
-			sign = 1;
-			++t;
 		}
-		else if (*t == "-")
-			sign = -sign;
-		else if (*t == "=")
-			switchSide = !switchSide;
+		std::stringstream ss;
+		ss << (isValueNegative == true ? "-" : "") << valueStr << " ";
+		ss << (isDegreeNegative == true ? "-" : "") << degreeStr;
+		Real value;
+		Integer degree;
+		ss >> value >> degree;
+		std::vector<Term> &side = sideFlag == false ? this->__leftSide : this->__rightSide;
+		side.push_back(Term(value, degree));
 	}
 }
 
@@ -120,35 +83,4 @@ bool Equation::__isOperator(const std::string &s)
 	if (s.size() != 1)
 		return false;
 	return std::strchr("+-*=^X", s[0]) != NULL;
-}
-
-const terms_t &Equation::getLeftSide(void) const { return this->__leftSide; }
-
-const terms_t &Equation::getRightSide(void) const { return this->__rightSide; }
-
-Equation Equation::moveAllToOneSide(void) const
-{
-	Equation allInOneSide(*this);
-	while (allInOneSide.__rightSide.empty() == false)
-	{
-		Term elementToMove = allInOneSide.__rightSide.front();
-		allInOneSide.__leftSide.push_back(Term(elementToMove.getDegree(), -elementToMove.getValue()));
-		allInOneSide.__rightSide.erase(allInOneSide.__rightSide.begin());
-	}
-	return allInOneSide;
-}
-
-reduced_t Equation::reduce(void) const
-{
-	reduced_t reducedForm;
-	for (terms_t::const_iterator t = this->__leftSide.begin(); t != this->__leftSide.end(); t++)
-		reducedForm[t->getDegree()] += t->getValue();
-	for (reduced_t::iterator t = reducedForm.begin(); t != reducedForm.end();)
-	{
-		if (t->second == 0)
-			t = reducedForm.erase(t);
-		else
-			++t;
-	}
-	return reducedForm;
 }

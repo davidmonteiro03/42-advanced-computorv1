@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:54:50 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/15 15:11:53 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/21 15:21:56 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/23 09:28:58 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
+#include <limits>
 #include <vector>
 #include <map>
-#include <limits>
 
+#include "Parser.hpp"
 #include "Term.hpp"
-
-using terms_t = std::vector<Term>;
-using args_t = std::vector<std::string>;
-using reduced_t = std::map<long long int, double>;
-
 #include "Equation.hpp"
-#include "Computor.hpp"
+#include "Solver.hpp"

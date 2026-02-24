@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Equation.hpp                                       :+:      :+:    :+:   */
+/*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/23 08:08:29 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 11:24:08 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 07:15:40 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/23 12:39:56 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,21 @@
 
 #include "ft_computor.hpp"
 
-class Equation
+class Parser
 {
 public:
-	Equation(void);
-	Equation(const std::string &);
-	Equation(const Equation &);
-	Equation &operator=(const Equation &);
-	~Equation();
+	static std::vector<std::string> split(const std::string &);
+
+	static bool checkAsterisk(const std::string &);
+	static bool checkVariableX(const std::string &);
+	static bool checkOperator(const std::string &);
+
+	static double getValue(const std::string &);
+	static long long int getDegree(const std::string &);
 
 private:
-	std::vector<Term> __leftSide;
-	std::vector<Term> __rightSide;
-
-	friend class Solver;
+	Parser(void);
+	Parser(const Parser &);
+	Parser &operator=(const Parser &);
+	~Parser();
 };

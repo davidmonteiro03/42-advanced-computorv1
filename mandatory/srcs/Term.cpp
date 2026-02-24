@@ -5,38 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 10:19:19 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 10:24:18 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 08:04:15 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/23 11:17:12 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-Term::Term(void) : __degree(0), __value(0) {}
+Term::Term(void) : __value(0.0),
+				   __degree(0.0) {}
 
-Term::Term(const long long int &degree,
-		   const double &value) : __degree(degree),
-								  __value(value) {}
+Term::Term(const double &value,
+		   const long long int &degree) : __value(value),
+										  __degree(degree) {}
 
-Term::Term(const Term &copy) : __degree(copy.__degree),
-							   __value(copy.__value) {}
+Term::Term(const Term &copy) : __value(copy.__value),
+							   __degree(copy.__degree) {}
 
 Term &Term::operator=(const Term &other)
 {
 	if (this != &other)
 	{
-		this->__degree = other.__degree;
 		this->__value = other.__value;
+		this->__degree = other.__degree;
 	}
 	return *this;
 }
 
 Term::~Term() {}
 
-const long long int &Term::getDegree(void) const { return this->__degree; }
-
 const double &Term::getValue(void) const { return this->__value; }
 
-void Term::setDegree(const long long int &degree) { this->__degree = degree; }
-
-void Term::setValue(const double &value) { this->__value = value; }
+const long long int &Term::getDegree(void) const { return this->__degree; }

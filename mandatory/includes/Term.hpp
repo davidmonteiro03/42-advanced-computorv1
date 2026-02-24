@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 10:16:25 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 10:19:46 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 08:01:58 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/23 09:30:52 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,18 @@
 
 class Term
 {
-private:
-	long long int __degree;
-	double __value;
-
 public:
 	Term(void);
-	Term(const long long int &,
-		 const double &);
+	Term(const double &,
+		 const long long int &);
 	Term(const Term &);
 	Term &operator=(const Term &);
 	~Term();
 
-	const long long int &getDegree(void) const;
 	const double &getValue(void) const;
+	const long long int &getDegree(void) const;
 
-	void setDegree(const long long int &);
-	void setValue(const double &);
+private:
+	double __value;
+	long long int __degree;
 };

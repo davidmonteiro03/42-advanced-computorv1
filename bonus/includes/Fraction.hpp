@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Equation.hpp                                       :+:      :+:    :+:   */
+/*   Fraction.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/23 08:08:29 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 11:24:08 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 15:13:46 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/24 12:49:18 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,30 @@
 
 #include "ft_computor.hpp"
 
-class Equation
+class Fraction
 {
 public:
-	Equation(void);
-	Equation(const std::string &);
-	Equation(const Equation &);
-	Equation &operator=(const Equation &);
-	~Equation();
+	Fraction(void);
+	Fraction(const Real &,
+			 const Real &);
+	Fraction(const Fraction &);
+	Fraction &operator=(const Fraction &);
+	~Fraction();
+
+	friend std::istream &operator>>(std::istream &,
+									Fraction &);
+
+	friend std::ostream &operator<<(std::ostream &,
+									const Fraction &);
 
 private:
-	std::vector<Term> __leftSide;
-	std::vector<Term> __rightSide;
+	Integer __numerator;
+	Integer __denominator;
 
+	void __reduce(void);
+
+	Real __round(const std::size_t &) const;
+
+	friend class Real;
 	friend class Solver;
 };

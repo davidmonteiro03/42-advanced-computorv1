@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 11:10:11 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 11:24:15 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 17:06:29 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/24 10:48:58 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,139 +20,11 @@ Parser &Parser::operator=(const Parser &) { return *this; }
 
 Parser::~Parser() {}
 
-bool Parser::__isOperator(const std::string &s)
+std::list<std::string> Parser::tokenization(const std::string &expr)
 {
-	if (s.empty() != false)
-		return false;
-	if (s.size() != 1)
-		return false;
-	return std::strchr("+-*=^X", s[0]) != NULL;
-}
-
-void Parser::__checkSyntaxNumbers(const tokens_t::const_iterator &curr,
-								  const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev != end && (*prev == "*" || *prev == "X"))
-		throw std::invalid_argument("numbers can't contain '" + *prev + "' before it");
-	if (prev != end && Parser::__isOperator(*prev) == false)
-		throw std::invalid_argument("numbers can't contain other numbers before it");
-	if (next != end && *next == "^")
-		throw std::invalid_argument("numbers can't contain '" + *next + "' after it");
-	if (next != end && Parser::__isOperator(*next) == false)
-		throw std::invalid_argument("numbers can't contain other numbers after it");
-}
-
-void Parser::__checkSyntaxPlusMinus(const tokens_t::const_iterator &curr,
-									const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && (*prev == "*" || *prev == "^"))
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *prev + "' before it");
-	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *next + "' after it");
-	if (prev != end && next != end && ((*prev == "+" || *prev == "-") && (*next == "+" || *next == "-")))
-		throw std::invalid_argument("expression can't have three '+'/'-' consecutive signs");
-}
-
-void Parser::__checkSyntaxEquals(const tokens_t::const_iterator &curr,
-								 const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something before it");
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && Parser::__isOperator(*prev) != false && *prev != "X")
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *prev + "' before it");
-	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
-		throw std::invalid_argument("'" + *curr + "' sign can't contain '" + *next + "' after it");
-}
-
-void Parser::__checkSyntaxAsterik(const tokens_t::const_iterator &curr,
-								  const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something before it");
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && Parser::__isOperator(*prev) != false)
-		throw std::invalid_argument("'" + *curr + "' sign must contain numbers before it");
-	if (next != end && *next != "X")
-		throw std::invalid_argument("'" + *curr + "' sign must contain an 'X' after it");
-}
-
-void Parser::__checkSyntaxCaret(const tokens_t::const_iterator &curr,
-								const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something before it");
-	if (next == end)
-		throw std::invalid_argument("'" + *curr + "' sign must contain something after it");
-	if (prev != end && *prev != "X")
-		throw std::invalid_argument("'" + *curr + "' sign must contain an 'X' before it");
-	if (next != end && Parser::__isOperator(*next) != false)
-		throw std::invalid_argument("'" + *curr + "' sign must contain numbers after it");
-}
-
-void Parser::__checkSyntaxVariableX(const tokens_t::const_iterator &curr,
-									const tokens_t::const_iterator &end)
-{
-	tokens_t::const_iterator prev = std::prev(curr), next = std::next(curr);
-	if (prev != end && (*prev == "^" || *prev == "X"))
-		throw std::invalid_argument("'" + *curr + "' sign must contain an '" + *prev + "' before it");
-	if (next != end && (*next == "*" || *next == "X"))
-		throw std::invalid_argument("'" + *curr + "' sign must contain an '" + *next + "' after it");
-}
-
-void Parser::__checkVocabularyEquals(const tokens_t &tokens)
-{
-	bool hasEquals = false;
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
-	{
-		if (*t == "=")
-		{
-			if (hasEquals == true)
-				throw std::invalid_argument("expression must have only one '=' sign");
-			hasEquals = true;
-		}
-	}
-	if (hasEquals == false)
-		throw std::invalid_argument("expression must have a '=' sign");
-}
-
-void Parser::__checkVocabularyNumbers(const tokens_t &tokens)
-{
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
-	{
-		if (Parser::__isOperator(*t) == false)
-		{
-			tokens_t::const_iterator prev = std::prev(t);
-			if (prev != tokens.end() && *prev == "^")
-			{
-				double dDouble = 0;
-				long long int dInt = 0;
-				std::stringstream ssDouble(*t), ssInt(*t);
-				ssDouble >> dDouble;
-				ssInt >> dInt;
-				double check = static_cast<double>(dInt);
-				if (dDouble != check)
-					throw std::invalid_argument("'X' exponents must be integer");
-			}
-		}
-	}
-}
-
-tokens_t Parser::tokenization(const std::string &expr)
-{
-	for (std::string::const_iterator c = expr.begin(); c != expr.end(); c++)
-		if (std::strchr("0123456789+-*=.X^", *c) == NULL && std::isspace(*c) == false)
-			throw std::invalid_argument("expression contains invalid characters");
-	tokens_t tokens;
+	std::list<std::string> tokens;
+	if (expr.empty())
+		return tokens;
 	for (std::string::const_iterator c = expr.begin(); c != expr.end();)
 	{
 		if (std::isspace(*c) != false)
@@ -160,44 +32,47 @@ tokens_t Parser::tokenization(const std::string &expr)
 			c++;
 			continue;
 		}
-		if (std::strchr("+-*=^X", *c) != NULL)
+		if (std::strchr(OPERATOR_CHARS, *c) != NULL)
 		{
 			tokens.push_back(expr.substr(std::distance(expr.begin(), c++), 1));
 			continue;
 		}
-		std::string::const_iterator start = c;
-		for (; c != expr.end() && std::isspace(*c) == false && std::strchr("+-*=^X", *c) == NULL; c++)
+		std::string::const_iterator k = c;
+		for (; c != expr.end() && std::isspace(*c) == false && std::strchr(OPERATOR_CHARS, *c) == NULL; c++)
 			;
-		std::string::const_iterator end = c;
-		tokens.push_back(expr.substr(std::distance(expr.begin(), start), std::distance(start, end)));
+		tokens.push_back(expr.substr(std::distance(expr.begin(), k), std::distance(k, c)));
 	}
 	return tokens;
 }
 
-void Parser::checkSyntax(const tokens_t &tokens)
+void Parser::checkSyntax(const std::list<std::string> &tokens)
 {
-	if (tokens.empty() != false)
-		return;
-	for (tokens_t::const_iterator t = tokens.begin(); t != tokens.end(); t++)
+	if (tokens.empty())
+		throw std::invalid_argument("expression can not be empty");
+	bool hasEquals = false;
+	for (std::list<std::string>::const_iterator t = tokens.begin(); t != tokens.end(); t++)
 	{
-		if (Parser::__isOperator(*t) == false)
+		if (*t == "+")
 		{
-			Parser::__checkSyntaxNumbers(t, tokens.end());
+			Parser::__checkSyntaxPlus(t, tokens.end());
 			continue;
 		}
-		if (*t == "+" || *t == "-")
+		if (*t == "-")
 		{
-			Parser::__checkSyntaxPlusMinus(t, tokens.end());
-			continue;
-		}
-		if (*t == "=")
-		{
-			Parser::__checkSyntaxEquals(t, tokens.end());
+			Parser::__checkSyntaxMinus(t, tokens.end());
 			continue;
 		}
 		if (*t == "*")
 		{
-			Parser::__checkSyntaxAsterik(t, tokens.end());
+			Parser::__checkSyntaxAsterisk(t, tokens.end());
+			continue;
+		}
+		if (*t == "=")
+		{
+			if (hasEquals == true)
+				throw std::invalid_argument("expression can only contain one equals sign");
+			hasEquals = true;
+			Parser::__checkSyntaxEquals(t, tokens.end());
 			continue;
 		}
 		if (*t == "^")
@@ -210,13 +85,209 @@ void Parser::checkSyntax(const tokens_t &tokens)
 			Parser::__checkSyntaxVariableX(t, tokens.end());
 			continue;
 		}
+		Parser::__checkSyntaxValue(t, tokens.end());
+	}
+	if (hasEquals == false)
+		throw std::invalid_argument("expression must contain one equals sign");
+}
+
+void Parser::checkVocabulary(const std::list<std::string> &tokens)
+{
+	if (tokens.empty())
+		throw std::invalid_argument("expression can not be empty");
+	for (std::list<std::string>::const_iterator t = tokens.begin(); t != tokens.end();)
+	{
+		if (*t == "=")
+		{
+			t++;
+			continue;
+		}
+		std::string valueStr = "1", degreeStr = "0";
+		bool isDegreeNegative = false;
+		while (t != tokens.end() && (*t == "+" || *t == "-"))
+			t++;
+		if (t != tokens.end() && Parser::__isOperator(*t) == false)
+			valueStr = *t++;
+		if (t != tokens.end() && *t == "*")
+			t++;
+		if (t != tokens.end() && *t == "X")
+		{
+			degreeStr = "1";
+			if (++t != tokens.end() && *t == "^")
+			{
+				while (++t != tokens.end() && (*t == "+" || *t == "-"))
+					if (*t == "-")
+						isDegreeNegative = !isDegreeNegative;
+				if (t != tokens.end() && Parser::__isOperator(*t) == false)
+					degreeStr = *t++;
+			}
+		}
+		Parser::__checkVocabularyValue(valueStr);
+		Parser::__checkVocabularyDegree(degreeStr);
+		if (isDegreeNegative == true)
+			throw std::invalid_argument("expression degrees must be natural values");
 	}
 }
 
-void Parser::checkVocabulary(const tokens_t &tokens)
+bool Parser::__isOperator(const std::string &token)
 {
-	if (tokens.empty() != false)
-		throw std::invalid_argument("expression must not be empty");
-	Parser::__checkVocabularyNumbers(tokens);
-	Parser::__checkVocabularyEquals(tokens);
+	if (token.empty() == true)
+		return false;
+	if (token.size() > 1)
+		return false;
+	return std::strchr(OPERATOR_CHARS, token[0]) != NULL;
+}
+
+void Parser::__checkSyntaxPlus(const std::list<std::string>::const_iterator &curr,
+							   const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (next == end)
+		throw std::invalid_argument("+ operator must contain something after it");
+	if (prev != end && *prev == "*")
+		throw std::invalid_argument("+ operator can not contain * operator before it");
+	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
+		throw std::invalid_argument("+ operator can not contain " + *next + " operator after it");
+}
+
+void Parser::__checkSyntaxMinus(const std::list<std::string>::const_iterator &curr,
+								const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (next == end)
+		throw std::invalid_argument("- operator must contain something after it");
+	if (prev != end && *prev == "*")
+		throw std::invalid_argument("- operator can not contain * operator before it");
+	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
+		throw std::invalid_argument("- operator can not contain " + *next + " operator after it");
+	if (prev != end && next != end)
+		if (*prev == "^" && (*next == "X" || Parser::__isOperator(*next) == false))
+			throw std::invalid_argument("expression degrees must be natural values");
+}
+
+void Parser::__checkSyntaxAsterisk(const std::list<std::string>::const_iterator &curr,
+								   const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (prev == end)
+		throw std::invalid_argument("* operator must contain something before it");
+	if (next == end)
+		throw std::invalid_argument("* operator must contain something after it");
+	if (prev != end && Parser::__isOperator(*prev) == true)
+		throw std::invalid_argument("* operator must contain values before it");
+	if (next != end && *next != "X")
+		throw std::invalid_argument("* operator must contain variable X after it");
+}
+
+void Parser::__checkSyntaxEquals(const std::list<std::string>::const_iterator &curr,
+								 const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (prev == end)
+		throw std::invalid_argument("= operator must contain something before it");
+	if (next == end)
+		throw std::invalid_argument("= operator must contain something after it");
+	if (prev != end && *prev != "X" && Parser::__isOperator(*prev) == true)
+		throw std::invalid_argument("= operator must contain values or variable X before it");
+	if (next != end && (*next == "*" || *next == "=" || *next == "^"))
+		throw std::invalid_argument("= operator must contain values, variable X or +/- operators after it");
+}
+
+void Parser::__checkSyntaxCaret(const std::list<std::string>::const_iterator &curr,
+								const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (prev == end)
+		throw std::invalid_argument("^ operator must contain something before it");
+	if (next == end)
+		throw std::invalid_argument("^ operator must contain something after it");
+	if (prev != end && *prev != "X")
+		throw std::invalid_argument("^ operator must contain variable X before it");
+	if (next != end && *next != "+" && *next != "-" && Parser::__isOperator(*next) == true)
+		throw std::invalid_argument("^ operator must contain values after it");
+}
+
+void Parser::__checkSyntaxVariableX(const std::list<std::string>::const_iterator &curr,
+									const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (prev != end && (*prev == "^" || *prev == "X"))
+		throw std::invalid_argument("variable X can not contain ^ operator neither variable X before it");
+	if (next != end && (*next == "*" || *next == "X" || Parser::__isOperator(*next) == false))
+		throw std::invalid_argument("variable X can not contain * operator neither variable X neither values before it");
+	if (prev != end && next != end)
+		if (*prev == "=" && *next == "=")
+			throw std::invalid_argument("variable X can not contain = operator before and other = operator after it");
+}
+
+void Parser::__checkSyntaxValue(const std::list<std::string>::const_iterator &curr,
+								const std::list<std::string>::const_iterator &end)
+{
+	const std::list<std::string>::const_iterator prev = std::prev(curr), next = std::next(curr);
+	if (prev != end && (*prev == "*" || *prev == "X" || Parser::__isOperator(*prev) == false))
+		throw std::invalid_argument("values can not contain * operator neither variable X neither values before it");
+	if (next != end && *next == "^")
+		throw std::invalid_argument("values can not contain ^ operator after it");
+	if (prev != end && next != end)
+	{
+		if (*prev == "=" && *next == "=")
+			throw std::invalid_argument("values can not contain = operator before and other = operator after it");
+		if (*prev == "^" && (*next == "*" || *next == "X"))
+			throw std::invalid_argument("values can not contain ^ operator before and * operator or variable X after it");
+	}
+}
+
+void Parser::__checkVocabularyValue(const std::string &token)
+{
+	if (token.empty() == true)
+		throw std::invalid_argument("value \"" + token + "\" can not be empty");
+	std::string::const_iterator c = token.begin();
+	while (c != token.end() && std::isspace(*c) != 0)
+		c++;
+	if (c != token.end() && (*c == '+' || *c == '-'))
+		c++;
+	bool hasIntegerPart = false, hasDecimalPart = false;
+	while (c != token.end() && std::isdigit(*c) != 0)
+	{
+		hasIntegerPart = true;
+		c++;
+	}
+	if (c != token.end() && *c == '.')
+	{
+		c++;
+		while (c != token.end() && std::isdigit(*c) != 0)
+		{
+			hasDecimalPart = true;
+			c++;
+		}
+	}
+	while (c != token.end() && std::isspace(*c) != 0)
+		c++;
+	if (c != token.end())
+		throw std::invalid_argument("value \"" + token + "\" contains invalid characters");
+	if (hasIntegerPart == false && hasDecimalPart == false)
+		throw std::invalid_argument("value \"" + token + "\" must have digits");
+}
+
+void Parser::__checkVocabularyDegree(const std::string &token)
+{
+	if (token.empty() == true)
+		throw std::invalid_argument("degree \"" + token + "\" can not be empty");
+	std::string::const_iterator c = token.begin();
+	while (c != token.end() && std::isspace(*c) != 0)
+		c++;
+	if (c != token.end() && (*c == '+' || *c == '-'))
+		c++;
+	bool hasDigits = false;
+	while (c != token.end() && std::isdigit(*c) != 0)
+	{
+		hasDigits = true;
+		c++;
+	}
+	while (c != token.end() && std::isspace(*c) != 0)
+		c++;
+	if (c != token.end())
+		throw std::invalid_argument("degree \"" + token + "\" contains invalid characters");
+	if (hasDigits == false)
+		throw std::invalid_argument("degree \"" + token + "\" must have digits");
 }

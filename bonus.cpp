@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 13:30:31 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/15 16:21:26 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 10:21:28 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/24 11:26:13 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,22 @@
 
 int main(int argc, char **argv)
 {
-	if (argc > 2)
-		return 0;
 	std::string expr = "";
-	if (argc == 1)
+	if (argc < 2)
 		std::getline(std::cin, expr);
 	else
-		expr = argv[1];
+		expr = static_cast<std::string>(argv[1]);
+	std::list<std::string> tokens = Parser::tokenization(expr);
 	try
 	{
-		Computor::solve(expr);
+		Parser::checkSyntax(tokens);
+		Parser::checkVocabulary(tokens);
+		Equation equation(tokens);
+		Solver::solve(equation);
 	}
 	catch (const std::exception &e)
 	{
-		std::cout << "Error: " << e.what() << std::endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 		return 1;
 	}
 	return 0;

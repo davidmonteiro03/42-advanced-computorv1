@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 11:07:37 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/01/13 11:21:48 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 07:15:40 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/24 11:16:58 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,16 @@
 
 #include "ft_computor.hpp"
 
+#define OPERATOR_CHARS "+-*=^X"
+
 class Parser
 {
+public:
+	static std::list<std::string> tokenization(const std::string &);
+
+	static void checkSyntax(const std::list<std::string> &);
+	static void checkVocabulary(const std::list<std::string> &);
+
 private:
 	Parser(void);
 	Parser(const Parser &);
@@ -24,27 +32,21 @@ private:
 
 	static bool __isOperator(const std::string &);
 
-	static void __checkSyntaxNumbers(const tokens_t::const_iterator &,
-									 const tokens_t::const_iterator &);
-	static void __checkSyntaxPlusMinus(const tokens_t::const_iterator &,
-									   const tokens_t::const_iterator &);
-	static void __checkSyntaxEquals(const tokens_t::const_iterator &,
-									const tokens_t::const_iterator &);
-	static void __checkSyntaxAsterik(const tokens_t::const_iterator &,
-									 const tokens_t::const_iterator &);
-	static void __checkSyntaxCaret(const tokens_t::const_iterator &,
-								   const tokens_t::const_iterator &);
-	static void __checkSyntaxVariableX(const tokens_t::const_iterator &,
-									   const tokens_t::const_iterator &);
+	static void __checkSyntaxPlus(const std::list<std::string>::const_iterator &,
+								  const std::list<std::string>::const_iterator &);
+	static void __checkSyntaxMinus(const std::list<std::string>::const_iterator &,
+								   const std::list<std::string>::const_iterator &);
+	static void __checkSyntaxAsterisk(const std::list<std::string>::const_iterator &,
+									  const std::list<std::string>::const_iterator &);
+	static void __checkSyntaxEquals(const std::list<std::string>::const_iterator &,
+									const std::list<std::string>::const_iterator &);
+	static void __checkSyntaxCaret(const std::list<std::string>::const_iterator &,
+								   const std::list<std::string>::const_iterator &);
+	static void __checkSyntaxVariableX(const std::list<std::string>::const_iterator &,
+									   const std::list<std::string>::const_iterator &);
+	static void __checkSyntaxValue(const std::list<std::string>::const_iterator &,
+								   const std::list<std::string>::const_iterator &);
 
-	static void __checkVocabularyNumbers(const tokens_t &);
-	static void __checkVocabularyEquals(const tokens_t &);
-
-public:
-	static tokens_t tokenization(const std::string &);
-
-	static void checkSyntax(const tokens_t &);
-	static void checkVocabulary(const tokens_t &);
-
-	Equation compute(const tokens_t &);
+	static void __checkVocabularyValue(const std::string &);
+	static void __checkVocabularyDegree(const std::string &);
 };
