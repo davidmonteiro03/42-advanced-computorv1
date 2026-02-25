@@ -6,13 +6,13 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 12:50:11 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/25 09:38:31 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:28:46 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-const std::size_t Real::__precision = 16;
+const std::size_t Real::__precision = 42;
 
 Real::Real(void) : __digits(),
 				   __isNegative(false) { this->__simplify(false); }
@@ -377,9 +377,10 @@ std::pair<std::vector<int>, std::vector<int>> Real::__computeDigitMul(const std:
 		fullB.push_back(b.second[i]);
 	tmpResult = Integer::__computeDigitMul(fullA, fullB);
 	const std::size_t decPartSize = a.second.size() + b.second.size();
-	for (std::size_t i = 0; i < tmpResult.size() - decPartSize; i++)
+	const std::size_t intPartSize = tmpResult.size() > decPartSize ? tmpResult.size() - decPartSize : 0;
+	for (std::size_t i = 0; i < intPartSize; i++)
 		result.first.push_back(tmpResult[i]);
-	for (std::size_t i = tmpResult.size() - decPartSize; i < tmpResult.size(); i++)
+	for (std::size_t i = intPartSize; i < tmpResult.size(); i++)
 		result.second.push_back(tmpResult[i]);
 	return result;
 }
