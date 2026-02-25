@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 12:50:11 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 13:29:49 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 09:38:31 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,17 @@ bool Real::operator>(const Real &other) const
 		if (this->__digits.first[i] != other.__digits.first[i])
 			return this->__isNegative == false ? this->__digits.first[i] > other.__digits.first[i]
 											   : this->__digits.first[i] < other.__digits.first[i];
-	if (this->__digits.second.size() != other.__digits.second.size())
-		return this->__isNegative == false ? this->__digits.second.size() > other.__digits.second.size()
-										   : this->__digits.second.size() < other.__digits.second.size();
-	for (std::size_t i = 0; i < this->__digits.second.size(); i++)
-		if (this->__digits.second[i] != other.__digits.second[i])
-			return this->__isNegative == false ? this->__digits.second[i] > other.__digits.second[i]
-											   : this->__digits.second[i] < other.__digits.second[i];
+	Real a(*this), b(other);
+	const std::size_t aSize = a.__digits.second.size(), bSize = b.__digits.second.size();
+	const std::size_t maxSize = std::max(aSize, bSize);
+	for (std::size_t i = aSize; i < maxSize; i++)
+		a.__digits.second.push_back(0);
+	for (std::size_t i = bSize; i < maxSize; i++)
+		b.__digits.second.push_back(0);
+	for (std::size_t i = 0; i < maxSize; i++)
+		if (a.__digits.second[i] != b.__digits.second[i])
+			return a.__isNegative == false ? a.__digits.second[i] > b.__digits.second[i]
+										   : a.__digits.second[i] < b.__digits.second[i];
 	return false;
 }
 
@@ -65,13 +69,17 @@ bool Real::operator<(const Real &other) const
 		if (this->__digits.first[i] != other.__digits.first[i])
 			return this->__isNegative == false ? this->__digits.first[i] < other.__digits.first[i]
 											   : this->__digits.first[i] > other.__digits.first[i];
-	if (this->__digits.second.size() != other.__digits.second.size())
-		return this->__isNegative == false ? this->__digits.second.size() < other.__digits.second.size()
-										   : this->__digits.second.size() > other.__digits.second.size();
-	for (std::size_t i = 0; i < this->__digits.second.size(); i++)
-		if (this->__digits.second[i] != other.__digits.second[i])
-			return this->__isNegative == false ? this->__digits.second[i] < other.__digits.second[i]
-											   : this->__digits.second[i] > other.__digits.second[i];
+	Real a(*this), b(other);
+	const std::size_t aSize = a.__digits.second.size(), bSize = b.__digits.second.size();
+	const std::size_t maxSize = std::max(aSize, bSize);
+	for (std::size_t i = aSize; i < maxSize; i++)
+		a.__digits.second.push_back(0);
+	for (std::size_t i = bSize; i < maxSize; i++)
+		b.__digits.second.push_back(0);
+	for (std::size_t i = 0; i < maxSize; i++)
+		if (a.__digits.second[i] != b.__digits.second[i])
+			return a.__isNegative == false ? a.__digits.second[i] < b.__digits.second[i]
+										   : a.__digits.second[i] > b.__digits.second[i];
 	return false;
 }
 
@@ -86,13 +94,17 @@ bool Real::operator>=(const Real &other) const
 		if (this->__digits.first[i] != other.__digits.first[i])
 			return this->__isNegative == false ? this->__digits.first[i] > other.__digits.first[i]
 											   : this->__digits.first[i] < other.__digits.first[i];
-	if (this->__digits.second.size() != other.__digits.second.size())
-		return this->__isNegative == false ? this->__digits.second.size() > other.__digits.second.size()
-										   : this->__digits.second.size() < other.__digits.second.size();
-	for (std::size_t i = 0; i < this->__digits.second.size(); i++)
-		if (this->__digits.second[i] != other.__digits.second[i])
-			return this->__isNegative == false ? this->__digits.second[i] > other.__digits.second[i]
-											   : this->__digits.second[i] < other.__digits.second[i];
+	Real a(*this), b(other);
+	const std::size_t aSize = a.__digits.second.size(), bSize = b.__digits.second.size();
+	const std::size_t maxSize = std::max(aSize, bSize);
+	for (std::size_t i = aSize; i < maxSize; i++)
+		a.__digits.second.push_back(0);
+	for (std::size_t i = bSize; i < maxSize; i++)
+		b.__digits.second.push_back(0);
+	for (std::size_t i = 0; i < maxSize; i++)
+		if (a.__digits.second[i] != b.__digits.second[i])
+			return a.__isNegative == false ? a.__digits.second[i] > b.__digits.second[i]
+										   : a.__digits.second[i] < b.__digits.second[i];
 	return true;
 }
 
@@ -107,13 +119,17 @@ bool Real::operator<=(const Real &other) const
 		if (this->__digits.first[i] != other.__digits.first[i])
 			return this->__isNegative == false ? this->__digits.first[i] < other.__digits.first[i]
 											   : this->__digits.first[i] > other.__digits.first[i];
-	if (this->__digits.second.size() != other.__digits.second.size())
-		return this->__isNegative == false ? this->__digits.second.size() < other.__digits.second.size()
-										   : this->__digits.second.size() > other.__digits.second.size();
-	for (std::size_t i = 0; i < this->__digits.second.size(); i++)
-		if (this->__digits.second[i] != other.__digits.second[i])
-			return this->__isNegative == false ? this->__digits.second[i] < other.__digits.second[i]
-											   : this->__digits.second[i] > other.__digits.second[i];
+	Real a(*this), b(other);
+	const std::size_t aSize = a.__digits.second.size(), bSize = b.__digits.second.size();
+	const std::size_t maxSize = std::max(aSize, bSize);
+	for (std::size_t i = aSize; i < maxSize; i++)
+		a.__digits.second.push_back(0);
+	for (std::size_t i = bSize; i < maxSize; i++)
+		b.__digits.second.push_back(0);
+	for (std::size_t i = 0; i < maxSize; i++)
+		if (a.__digits.second[i] != b.__digits.second[i])
+			return a.__isNegative == false ? a.__digits.second[i] < b.__digits.second[i]
+										   : a.__digits.second[i] > b.__digits.second[i];
 	return true;
 }
 
