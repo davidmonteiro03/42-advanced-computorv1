@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 08:45:50 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/25 18:59:35 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 19:08:44 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,16 @@ void Solver::__solveSecondDegreeEquation(const long double &a,
 	if (disc > 0)
 	{
 		std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
-		std::cout << (-b + Solver::__sqrt(disc)) / (2.0 * a) << std::endl;
-		std::cout << (-b - Solver::__sqrt(disc)) / (2.0 * a) << std::endl;
+		long double x1 = (-b + Solver::__sqrt(disc)) / (2.0 * a);
+		long double x2 = (-b - Solver::__sqrt(disc)) / (2.0 * a);
+		if (x1 == 0.0)
+			std::cout << 0.0 << std::endl;
+		else
+			std::cout << x1 << std::endl;
+		if (x2 == 0.0)
+			std::cout << 0.0 << std::endl;
+		else
+			std::cout << x2 << std::endl;
 		return;
 	}
 	if (disc < 0.0)
