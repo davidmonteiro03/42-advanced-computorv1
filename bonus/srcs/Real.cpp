@@ -6,13 +6,13 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 12:50:11 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/25 14:28:46 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 15:22:09 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-const std::size_t Real::__precision = 42;
+const std::size_t Real::__precision = 16;
 
 Real::Real(void) : __digits(),
 				   __isNegative(false) { this->__simplify(false); }
@@ -399,7 +399,7 @@ Real Real::__sqrt(void) const
 	while (true)
 	{
 		next = (approx + *this / approx) / two;
-		if (next == approx)
+		if (next.__digits.second.size() >= Real::__precision || next == approx)
 			break;
 		approx = next;
 	}
