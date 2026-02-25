@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 11:18:05 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 16:08:38 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 08:43:43 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/25 17:52:07 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 class Solver
 {
 public:
-	static void solve(const Equation &);
-
 	friend std::ostream &operator<<(std::ostream &,
-									const std::map<Integer, Real> &);
+									const std::map<unsigned long long int, long double> &);
+
+	static void solve(const Equation &);
 
 private:
 	Solver(void);
@@ -28,23 +28,19 @@ private:
 	Solver &operator=(const Solver &);
 	~Solver();
 
+	static void __solveZeroDegreeEquation(const long double &);
+	static void __solveFirstDegreeEquation(const long double &,
+										   const long double &);
+	static void __solveSecondDegreeEquation(const long double &,
+											const long double &,
+											const long double &);
+
 	static void __displayTerm(std::ostream &,
-							  const std::pair<Integer, Real> &,
+							  const std::pair<unsigned long long int, long double> &,
 							  const bool &);
 
-	static void __solveZeroDegreeEquation(const Real &);
-	static void __solveFirstDegreeEquation(const Real &,
-										   const Real &);
-	static void __solveSecondDegreeEquation(const Real &,
-											const Real &,
-											const Real &);
+	static long double __sqrt(const long double &);
 
-	static void __displayComplex(const Real &,
-								 const Real &);
-
-	static void __displayComplexFractions(const Fraction &,
-										  const Fraction &,
-										  const bool &,
-										  const bool &,
-										  const bool &);
+	static void __displayComplex(const long double &,
+								 const long double &);
 };

@@ -6,7 +6,7 @@
 #    By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/09 13:31:50 by dcaetano          #+#    #+#              #
-#    Updated: 2026/02/24 16:49:48 by dcaetano         ###   ########.fr        #
+#    Updated: 2026/02/25 17:24:49 by dcaetano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ OBJ_EXT      = .o
 CLSS         = Parser Term Equation Solver
 CPPS         = $(CLSS)
 HDRS         = $(CLSS) ft_$(NAME)
-CLSS_B       = Integer Real Fraction $(CLSS)
+CLSS_B       = $(CLSS)
 CPPS_B       = $(CLSS_B)
 HDRS_B       = $(CLSS_B) ft_$(NAME)
 

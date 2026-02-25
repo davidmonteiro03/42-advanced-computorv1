@@ -5,19 +5,19 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 10:35:27 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 10:48:20 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/23 08:04:15 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/25 17:41:04 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-Term::Term(void) : __value(),
-				   __degree() {}
+Term::Term(void) : __value(0.0),
+				   __degree(0) {}
 
-Term::Term(const Real &value,
-		   const Integer &degree) : __value(value),
-									__degree(degree) {}
+Term::Term(const long double &value,
+		   const unsigned long long int &degree) : __value(value),
+												   __degree(degree) {}
 
 Term::Term(const Term &copy) : __value(copy.__value),
 							   __degree(copy.__degree) {}
@@ -34,6 +34,6 @@ Term &Term::operator=(const Term &other)
 
 Term::~Term() {}
 
-const Real &Term::getValue(void) const { return this->__value; }
+const long double &Term::getValue(void) const { return this->__value; }
 
-const Integer &Term::getDegree(void) const { return this->__degree; }
+const unsigned long long int &Term::getDegree(void) const { return this->__degree; }

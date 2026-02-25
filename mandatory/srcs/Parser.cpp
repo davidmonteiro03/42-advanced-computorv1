@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 07:17:17 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/23 10:16:06 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:41:24 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,19 +100,19 @@ bool Parser::checkVariableX(const std::string &s)
 	return hasX == true && hasCaret == true && hasExponent == true && c == s.end();
 }
 
-double Parser::getValue(const std::string &s)
+long double Parser::getValue(const std::string &s)
 {
-	double value = 0.0;
+	long double value = 0.0;
 	std::stringstream ss(s);
 	ss >> value;
 	return value;
 }
 
-long long int Parser::getDegree(const std::string &s)
+unsigned long long int Parser::getDegree(const std::string &s)
 {
 	if (s.empty() == true)
 		return 0;
-	long long int degree = 0;
+	unsigned long long int degree = 0;
 	std::string::const_iterator c = s.begin();
 	while (c != s.end() && std::isspace(*c) != 0)
 		c++;

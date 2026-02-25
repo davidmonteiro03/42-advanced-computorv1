@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 07:15:40 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/23 12:39:56 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:41:13 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ public:
 	static bool checkVariableX(const std::string &);
 	static bool checkOperator(const std::string &);
 
-	static double getValue(const std::string &);
-	static long long int getDegree(const std::string &);
+	static long double getValue(const std::string &);
+	static unsigned long long int getDegree(const std::string &);
 
 private:
 	Parser(void);

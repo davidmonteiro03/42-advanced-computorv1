@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/23 10:27:52 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 11:21:47 by dcaetano         ###   ########.fr       */
+/*   Created: 2026/02/21 15:21:56 by dcaetano          #+#    #+#             */
+/*   Updated: 2026/02/25 18:02:54 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,11 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <limits>
 #include <vector>
-#include <list>
 #include <map>
+#include <list>
 
-#include "Integer.hpp"
-#include "Real.hpp"
-#include "Fraction.hpp"
 #include "Parser.hpp"
 #include "Term.hpp"
 #include "Equation.hpp"

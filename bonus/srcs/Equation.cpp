@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 10:50:59 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 11:23:59 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:40:49 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ Equation::Equation(const std::list<std::string> &tokens) : __leftSide(),
 		std::stringstream ss;
 		ss << (isValueNegative == true ? "-" : "") << valueStr << " ";
 		ss << (isDegreeNegative == true ? "-" : "") << degreeStr;
-		Real value;
-		Integer degree;
+		long double value;
+		unsigned long long int degree;
 		ss >> value >> degree;
 		std::vector<Term> &side = sideFlag == false ? this->__leftSide : this->__rightSide;
 		side.push_back(Term(value, degree));

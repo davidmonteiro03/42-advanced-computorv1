@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 10:21:28 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/24 11:26:13 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:42:36 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int main(int argc, char **argv)
 {
+	std::cout.precision(std::numeric_limits<long double>::digits10);
 	std::string expr = "";
 	if (argc < 2)
 		std::getline(std::cin, expr);
