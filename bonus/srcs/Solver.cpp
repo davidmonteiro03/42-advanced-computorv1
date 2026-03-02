@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 08:45:50 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/03/02 07:38:10 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/03/02 08:52:54 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,9 @@ void Solver::__solveFirstDegreeEquation(const long double &a,
 	if (a == 0.0L)
 		return Solver::__solveZeroDegreeEquation(b);
 	std::cout << "The solution is: " << std::endl;
-	std::cout << (b == 0.0L ? 0.0L : -b / a) << std::endl;
+	long double x = -b / a;
+	(x == 0.0L ? x = 0.0L : true);
+	std::cout << x << std::endl;
 }
 
 void Solver::__solveSecondDegreeEquation(const long double &a,
@@ -119,20 +121,27 @@ void Solver::__solveSecondDegreeEquation(const long double &a,
 		std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
 		long double x1 = (-b + Solver::__sqrt(disc)) / (2.0L * a);
 		long double x2 = (-b - Solver::__sqrt(disc)) / (2.0L * a);
-		std::cout << (x1 == 0.0L ? 0.0L : x1) << std::endl;
-		std::cout << (x2 == 0.0L ? 0.0L : x2) << std::endl;
+		(x1 == 0.0L ? x1 = 0.0L : true);
+		(x2 == 0.0L ? x2 = 0.0L : true);
+		std::cout << x1 << std::endl;
+		std::cout << x2 << std::endl;
 		return;
 	}
 	if (disc < 0.0L)
 	{
 		std::cout << "Discriminant is strictly negative, the two complex solutions are:" << std::endl;
-		double realPart = -b / (2.0L * a), imagPart = Solver::__sqrt(-disc) / (2.0L * a);
+		long double realPart = -b / (2.0L * a);
+		long double imagPart = Solver::__sqrt(-disc) / (2.0L * a);
+		(realPart == 0.0L ? realPart = 0.0L : true);
+		(imagPart == 0.0L ? imagPart = 0.0L : true);
 		Solver::__displayComplex(realPart, imagPart);
 		Solver::__displayComplex(realPart, -imagPart);
 		return;
 	}
 	std::cout << "Discriminant is strictly zero, the solution is:" << std::endl;
-	std::cout << (b == 0.0L ? 0.0L : -b / (2.0L * a)) << std::endl;
+	long double x = -b / (2.0L * a);
+	(x == 0.0L ? x = 0.0L : true);
+	std::cout << x << std::endl;
 }
 
 long double Solver::__sqrt(const long double &x)
