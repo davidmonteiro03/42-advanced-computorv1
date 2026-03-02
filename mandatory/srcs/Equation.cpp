@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 08:12:16 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/03/02 07:29:14 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/03/02 09:18:50 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Equation::Equation(void) : __leftSide(),
 Equation::Equation(const std::string &expr)
 {
 	std::vector<std::string> args = Parser::split(expr);
-	long double sign = 1.0;
+	long double sign = 1.0L;
 	bool sideFlag = false;
 	for (std::vector<std::string>::iterator a = args.begin(); a != args.end(); a++)
 	{
@@ -34,6 +34,7 @@ Equation::Equation(const std::string &expr)
 		long double value = Parser::getValue(valueStr) * sign;
 		unsigned long long int degree = Parser::getDegree(variableXStr);
 		side.push_back(Term(value, degree));
+		sign = 1.0L;
 		if (++a == args.end())
 			break;
 		if (Parser::checkOperator(*a) == false)
@@ -41,10 +42,7 @@ Equation::Equation(const std::string &expr)
 		if (*a == "-")
 			sign = -1.0L;
 		else if (*a == "=")
-		{
-			sign = 1.0L;
 			sideFlag = !sideFlag;
-		}
 	}
 }
 
