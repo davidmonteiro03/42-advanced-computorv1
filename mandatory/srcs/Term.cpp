@@ -6,14 +6,14 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 08:04:15 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/25 17:41:29 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/03/02 07:33:30 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_computor.hpp"
 
-Term::Term(void) : __value(0.0),
-				   __degree(0.0) {}
+Term::Term(void) : __value(0.0L),
+				   __degree(0.0L) {}
 
 Term::Term(const long double &value,
 		   const unsigned long long int &degree) : __value(value),

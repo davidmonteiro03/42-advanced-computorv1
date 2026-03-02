@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 08:12:16 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/02/25 17:41:21 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/03/02 07:29:14 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ Equation::Equation(const std::string &expr)
 		if (Parser::checkOperator(*a) == false)
 			break;
 		if (*a == "-")
-			sign = -1.0;
+			sign = -1.0L;
 		else if (*a == "=")
 		{
-			sign = 1.0;
+			sign = 1.0L;
 			sideFlag = !sideFlag;
 		}
 	}
