@@ -6,7 +6,7 @@
 /*   By: dcaetano <dcaetano@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 08:45:50 by dcaetano          #+#    #+#             */
-/*   Updated: 2026/03/02 08:53:01 by dcaetano         ###   ########.fr       */
+/*   Updated: 2026/03/04 11:38:43 by dcaetano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,16 @@ void Solver::solve(const Equation &p_eq)
 	for (std::vector<Term>::const_iterator t = p_eq.__rightSide.begin(); t != p_eq.__rightSide.end(); t++)
 		reducedForm[t->getDegree()] -= t->getValue();
 	std::cout << "Reduced form: " << reducedForm << std::endl;
+	for (std::map<unsigned long long int, long double>::iterator it = reducedForm.begin(); it != reducedForm.end();)
+	{
+		if (it->second == 0.0L)
+		{
+			reducedForm.erase(it);
+			it = reducedForm.begin();
+		}
+		else
+			++it;
+	}
 	unsigned long long int polynomialDegree = 0ULL;
 	for (std::map<unsigned long long int, long double>::const_iterator t = reducedForm.begin(); t != reducedForm.end(); t++)
 		polynomialDegree = std::max(polynomialDegree, t->first);
